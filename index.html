@@ -425,5 +425,32 @@
             }
         }
     </script>
+ </head>
+    <body class="bg-stone-50 text-stone-800 font-sans">
+  <div class="max-w-3xl mx-auto p-6">
+    <h1 class="text-4xl font-serif mb-4">Vítejte na mém profesionálním profilu</h1>
+    <p class="text-lg mb-6">Jsem Miloslav Hesek a pomáhám přeměňovat složitá data na jasné odpovědi.</p>
+
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+      const ctx = document.getElementById('myChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Leden', 'Únor', 'Březen', 'Duben'],
+          datasets: [{
+            label: 'Počet analýz',
+            data: [12, 19, 3, 5],
+            backgroundColor: '#292524'
+          }]
+        },
+        options: {
+          responsive: true
+        }
+      });
+    </script>
+  </div>
 </body>
 </html>
+
