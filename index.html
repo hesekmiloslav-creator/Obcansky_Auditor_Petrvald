@@ -33,15 +33,29 @@
     </script>
 
     <style>
-        /* Vlastní styly pro grafy a animace */
         .chart-container {
             position: relative;
             width: 100%;
             height: 300px;
         }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+        /* Animace pro modální okno */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 300ms, transform 300ms;
+        }
+        .modal-exit {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .modal-exit-active {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 200ms, transform 200ms;
         }
     </style>
 </head>
@@ -86,59 +100,91 @@
                     </a>
                 </div>
             </div>
-            <!-- Zástupný kruh pro foto -->
+            
+            <!-- FOTO SEKCE -->
             <div class="md:w-1/2 flex justify-center relative">
                 <div class="absolute inset-0 bg-amber-500 rounded-full blur-3xl opacity-20 transform translate-x-10 translate-y-10"></div>
                 <div class="relative w-72 h-72 bg-white p-2 rounded-full shadow-2xl">
                     <div class="w-full h-full bg-stone-200 rounded-full flex items-center justify-center overflow-hidden bg-white">
-                        <!-- ZDE JE VLOŽENA VAŠE FOTKA -->
-                        <img src="foto.png" alt="Miloslav Hesek" class="w-full h-full object-cover">
+                        <img 
+                            src="foto.jpg" 
+                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Miloslav+Hesek&background=1e3a8a&color=fff&size=512&font-size=0.4';" 
+                            alt="Miloslav Hesek" 
+                            class="w-full h-full object-cover"
+                        >
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- === SEKCE DOVEDNOSTI === -->
-    <section id="skills" class="py-20 bg-white">
+    <!-- === SEKCE DOVEDNOSTI (INTERAKTIVNÍ) === -->
+    <section id="skills" class="py-24 bg-white relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="font-serif text-3xl font-bold text-navy-900">Moje specializace</h2>
-                <p class="text-stone-500 mt-2">Kombinuji technické znalosti s pochopením veřejné správy.</p>
+                <p class="text-stone-500 mt-2">Klikněte na kartu pro zobrazení detailů a metodiky.</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Skill 1 -->
-                <div class="p-8 bg-stone-50 rounded-xl border border-stone-100 hover:shadow-lg transition group">
-                    <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">📊</div>
-                    <h3 class="font-bold text-xl text-navy-900 mb-2">Analýza Rozpočtů</h3>
-                    <p class="text-stone-600 text-sm">
-                        Rozklíčování mandatorních a kapitálových výdajů. Identifikace skrytých dluhů a neefektivity v hospodaření obcí.
+                
+                <!-- Skill 1: Klikací -->
+                <div onclick="openModal('analysis')" class="p-8 bg-stone-50 rounded-2xl border border-stone-200 hover:border-amber-400 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity text-amber-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                        </svg>
+                    </div>
+                    <div class="w-14 h-14 bg-white border border-stone-100 rounded-xl shadow-sm flex items-center justify-center text-3xl mb-6 group-hover:scale-110 group-hover:rotate-3 group-hover:bg-amber-50 transition duration-300">
+                        📊
+                    </div>
+                    <h3 class="font-bold text-xl text-navy-900 mb-3 group-hover:text-amber-600 transition">Analýza Rozpočtů</h3>
+                    <p class="text-stone-600 text-sm leading-relaxed">
+                        Rozklíčování mandatorních a kapitálových výdajů. Zjistěte, zda vaše obec žije na dluh nebo investuje.
                     </p>
+                    <span class="text-xs font-bold text-amber-600 mt-4 inline-block uppercase tracking-wider border-b border-transparent group-hover:border-amber-600 transition">Zobrazit detail &rarr;</span>
                 </div>
-                <!-- Skill 2 -->
-                <div class="p-8 bg-stone-50 rounded-xl border border-stone-100 hover:shadow-lg transition group">
-                    <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">💻</div>
-                    <h3 class="font-bold text-xl text-navy-900 mb-2">Vizualizace Dat</h3>
-                    <p class="text-stone-600 text-sm">
-                        Tvorba srozumitelných dashboardů. Převod složitých Excel tabulek do interaktivních grafů pro veřejnost.
+
+                <!-- Skill 2: Klikací -->
+                <div onclick="openModal('viz')" class="p-8 bg-stone-50 rounded-2xl border border-stone-200 hover:border-amber-400 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity text-amber-500">
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                        </svg>
+                    </div>
+                    <div class="w-14 h-14 bg-white border border-stone-100 rounded-xl shadow-sm flex items-center justify-center text-3xl mb-6 group-hover:scale-110 group-hover:rotate-3 group-hover:bg-amber-50 transition duration-300">
+                        💻
+                    </div>
+                    <h3 class="font-bold text-xl text-navy-900 mb-3 group-hover:text-amber-600 transition">Vizualizace Dat</h3>
+                    <p class="text-stone-600 text-sm leading-relaxed">
+                        Převod složitých tabulek do srozumitelných grafů. Aby datům rozuměl každý občan na první pohled.
                     </p>
+                    <span class="text-xs font-bold text-amber-600 mt-4 inline-block uppercase tracking-wider border-b border-transparent group-hover:border-amber-600 transition">Zobrazit detail &rarr;</span>
                 </div>
-                <!-- Skill 3 -->
-                <div class="p-8 bg-stone-50 rounded-xl border border-stone-100 hover:shadow-lg transition group">
-                    <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🔍</div>
-                    <h3 class="font-bold text-xl text-navy-900 mb-2">Open Source Intelligence</h3>
-                    <p class="text-stone-600 text-sm">
-                        Pokročilé vyhledávání v rejstřících (Monitor, Hlídač státu, Registr smluv). Propojování vazeb dodavatelů.
+
+                <!-- Skill 3: Klikací -->
+                <div onclick="openModal('osint')" class="p-8 bg-stone-50 rounded-2xl border border-stone-200 hover:border-amber-400 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity text-amber-500">
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                        </svg>
+                    </div>
+                    <div class="w-14 h-14 bg-white border border-stone-100 rounded-xl shadow-sm flex items-center justify-center text-3xl mb-6 group-hover:scale-110 group-hover:rotate-3 group-hover:bg-amber-50 transition duration-300">
+                        🔍
+                    </div>
+                    <h3 class="font-bold text-xl text-navy-900 mb-3 group-hover:text-amber-600 transition">Investigativa z otevřených zdrojů</h3>
+                    <p class="text-stone-600 text-sm leading-relaxed">
+                        Pokročilé lustrování v rejstřících. Kontrola dodavatelů, vazeb na politiky a oprávněnosti fakturací.
                     </p>
+                    <span class="text-xs font-bold text-amber-600 mt-4 inline-block uppercase tracking-wider border-b border-transparent group-hover:border-amber-600 transition">Zobrazit detail &rarr;</span>
                 </div>
+
             </div>
         </div>
     </section>
 
     <!-- === HLAVNÍ PROJEKT: AUDITOR (Aplikace) === -->
     <section id="auditor" class="py-20 bg-navy-900 text-white relative">
-        <!-- Pozadí -->
         <div class="absolute inset-0 overflow-hidden">
             <div class="absolute -top-20 -right-20 w-96 h-96 bg-blue-600 rounded-full blur-[100px] opacity-30"></div>
             <div class="absolute bottom-0 left-0 w-80 h-80 bg-amber-600 rounded-full blur-[100px] opacity-20"></div>
@@ -155,8 +201,6 @@
 
             <!-- === OKNO APLIKACE === -->
             <div class="bg-stone-50 text-stone-900 rounded-2xl shadow-2xl overflow-hidden border border-stone-700">
-                
-                <!-- 1. Toolbar Aplikace -->
                 <div class="bg-white border-b border-stone-200 p-4 flex flex-wrap justify-between items-center gap-4">
                     <div class="flex items-center gap-2">
                         <div class="w-3 h-3 rounded-full bg-red-500"></div>
@@ -171,9 +215,7 @@
                     </div>
                 </div>
 
-                <!-- 2. Obsah Aplikace -->
                 <div class="min-h-[500px]">
-                    
                     <!-- TAB 1: GRAFY -->
                     <div id="tab-graphs" class="p-6 md:p-8 animate-fade-in">
                         <div class="flex justify-between items-end mb-6">
@@ -187,27 +229,20 @@
                                 <button onclick="updateData('2025')" class="year-btn px-3 py-1 text-sm border rounded bg-white border-stone-300 text-stone-600" data-year="2025">2025</button>
                             </div>
                         </div>
-
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <!-- Graf struktury -->
                             <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
                                 <h4 class="text-sm font-bold text-stone-400 uppercase mb-4 text-center">Poměr Investic vs. Provoz</h4>
                                 <div class="chart-container relative h-64">
                                     <canvas id="structureChart"></canvas>
                                 </div>
-                                <p id="desc-structure" class="mt-4 text-xs text-center text-stone-500 bg-stone-50 p-2 rounded">
-                                    Zdravá obec investuje alespoň 20 % rozpočtu.
-                                </p>
+                                <p id="desc-structure" class="mt-4 text-xs text-center text-stone-500 bg-stone-50 p-2 rounded">Zdravá obec investuje alespoň 20 % rozpočtu.</p>
                             </div>
-                            <!-- Graf trendu -->
                             <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
                                 <h4 class="text-sm font-bold text-stone-400 uppercase mb-4 text-center">Vývoj Salda (Příjmy - Výdaje)</h4>
                                 <div class="chart-container relative h-64">
                                     <canvas id="trendChart"></canvas>
                                 </div>
-                                <p id="desc-trend" class="mt-4 text-xs text-center text-stone-500 bg-stone-50 p-2 rounded">
-                                    Sloupec pod nulou značí deficit (čerpání rezerv).
-                                </p>
+                                <p id="desc-trend" class="mt-4 text-xs text-center text-stone-500 bg-stone-50 p-2 rounded">Sloupec pod nulou značí deficit (čerpání rezerv).</p>
                             </div>
                         </div>
                     </div>
@@ -217,37 +252,19 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                             <div>
                                 <h3 class="text-2xl font-bold text-white mb-2">Investiční Kalkulačka</h3>
-                                <p class="text-stone-400 text-sm mb-6">
-                                    Zadejte údaje z Monitoru MFČR a zjistěte, kolik peněz reálně zbývá na rozvoj města po zaplacení nutného provozu.
-                                </p>
+                                <p class="text-stone-400 text-sm mb-6">Zadejte údaje z Monitoru MFČR a zjistěte, kolik peněz reálně zbývá na rozvoj města.</p>
                                 <div class="space-y-4">
-                                    <div>
-                                        <label class="text-xs font-bold text-amber-500 uppercase">Příjmy (tis. Kč)</label>
-                                        <input type="number" id="in-revenue" class="w-full bg-navy-900 border border-navy-600 text-white p-3 rounded mt-1 focus:border-amber-500 focus:outline-none" placeholder="Např. 150000">
-                                    </div>
-                                    <div>
-                                        <label class="text-xs font-bold text-stone-400 uppercase">Provozní výdaje (tis. Kč)</label>
-                                        <input type="number" id="in-mandatory" class="w-full bg-navy-900 border border-navy-600 text-white p-3 rounded mt-1 focus:border-amber-500 focus:outline-none" placeholder="Např. 110000">
-                                    </div>
-                                    <div>
-                                        <label class="text-xs font-bold text-stone-400 uppercase">Splátky dluhů (tis. Kč)</label>
-                                        <input type="number" id="in-debt" class="w-full bg-navy-900 border border-navy-600 text-white p-3 rounded mt-1 focus:border-amber-500 focus:outline-none" placeholder="Např. 5000">
-                                    </div>
-                                    <button onclick="calculate()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded shadow-lg transition mt-2">
-                                        Spočítat výsledek
-                                    </button>
+                                    <div><label class="text-xs font-bold text-amber-500 uppercase">Příjmy (tis. Kč)</label><input type="number" id="in-revenue" class="w-full bg-navy-900 border border-navy-600 text-white p-3 rounded mt-1 focus:border-amber-500 focus:outline-none" placeholder="Např. 150000"></div>
+                                    <div><label class="text-xs font-bold text-stone-400 uppercase">Provozní výdaje (tis. Kč)</label><input type="number" id="in-mandatory" class="w-full bg-navy-900 border border-navy-600 text-white p-3 rounded mt-1 focus:border-amber-500 focus:outline-none" placeholder="Např. 110000"></div>
+                                    <div><label class="text-xs font-bold text-stone-400 uppercase">Splátky dluhů (tis. Kč)</label><input type="number" id="in-debt" class="w-full bg-navy-900 border border-navy-600 text-white p-3 rounded mt-1 focus:border-amber-500 focus:outline-none" placeholder="Např. 5000"></div>
+                                    <button onclick="calculate()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded shadow-lg transition mt-2">Spočítat výsledek</button>
                                 </div>
                             </div>
-                            <!-- Výsledek -->
                             <div class="bg-navy-900/50 border border-navy-700 p-8 rounded-2xl text-center">
                                 <span class="text-stone-400 uppercase text-xs tracking-wider">Volné prostředky (Free Cash Flow)</span>
                                 <div class="text-5xl font-bold text-white my-4" id="res-amount">---</div>
-                                <div class="w-full bg-navy-900 h-4 rounded-full overflow-hidden mb-4 relative">
-                                    <div id="res-bar" class="h-full w-0 bg-stone-700 transition-all duration-1000"></div>
-                                </div>
-                                <div id="res-msg" class="text-sm text-stone-300 min-h-[3rem]">
-                                    Zadejte data pro výpočet.
-                                </div>
+                                <div class="w-full bg-navy-900 h-4 rounded-full overflow-hidden mb-4 relative"><div id="res-bar" class="h-full w-0 bg-stone-700 transition-all duration-1000"></div></div>
+                                <div id="res-msg" class="text-sm text-stone-300 min-h-[3rem]">Zadejte data pro výpočet.</div>
                             </div>
                         </div>
                     </div>
@@ -257,31 +274,21 @@
                         <h3 class="text-xl font-bold text-navy-900 mb-6">Ostrá data pro IČO: 00297593</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <a href="https://monitor.statnipokladna.cz/" target="_blank" class="block p-6 bg-white border border-stone-200 rounded-xl hover:border-amber-500 hover:shadow-md transition group">
-                                <div class="text-3xl mb-2">📈</div>
-                                <h4 class="font-bold text-navy-900 group-hover:text-amber-600">Monitor MFČR</h4>
-                                <p class="text-xs text-stone-500 mt-1">Oficiální rozpočty a účetní závěrky.</p>
+                                <div class="text-3xl mb-2">📈</div><h4 class="font-bold text-navy-900 group-hover:text-amber-600">Monitor MFČR</h4><p class="text-xs text-stone-500 mt-1">Oficiální rozpočty a účetní závěrky.</p>
                             </a>
                             <a href="https://smlouvy.gov.cz/vyhledavani?party_ico=00297593" target="_blank" class="block p-6 bg-white border border-stone-200 rounded-xl hover:border-amber-500 hover:shadow-md transition group">
-                                <div class="text-3xl mb-2">📜</div>
-                                <h4 class="font-bold text-navy-900 group-hover:text-amber-600">Registr smluv</h4>
-                                <p class="text-xs text-stone-500 mt-1">Faktury a smlouvy nad 50 000 Kč.</p>
+                                <div class="text-3xl mb-2">📜</div><h4 class="font-bold text-navy-900 group-hover:text-amber-600">Registr smluv</h4><p class="text-xs text-stone-500 mt-1">Faktury a smlouvy nad 50 000 Kč.</p>
                             </a>
                             <a href="https://www.hlidacstatu.cz/Hledat?q=ico:00297593" target="_blank" class="block p-6 bg-white border border-stone-200 rounded-xl hover:border-amber-500 hover:shadow-md transition group">
-                                <div class="text-3xl mb-2">🛡️</div>
-                                <h4 class="font-bold text-navy-900 group-hover:text-amber-600">Hlídač státu</h4>
-                                <p class="text-xs text-stone-500 mt-1">Vazby na politiky a sponzory.</p>
+                                <div class="text-3xl mb-2">🛡️</div><h4 class="font-bold text-navy-900 group-hover:text-amber-600">Hlídač státu</h4><p class="text-xs text-stone-500 mt-1">Vazby na politiky a sponzory.</p>
                             </a>
                             <a href="https://udeska.petrvald-mesto.cz/" target="_blank" class="block p-6 bg-white border border-stone-200 rounded-xl hover:border-amber-500 hover:shadow-md transition group">
-                                <div class="text-3xl mb-2">🏛️</div>
-                                <h4 class="font-bold text-navy-900 group-hover:text-amber-600">Úřední deska</h4>
-                                <p class="text-xs text-stone-500 mt-1">Závěrečné účty města.</p>
+                                <div class="text-3xl mb-2">🏛️</div><h4 class="font-bold text-navy-900 group-hover:text-amber-600">Úřední deska</h4><p class="text-xs text-stone-500 mt-1">Závěrečné účty města.</p>
                             </a>
                         </div>
                     </div>
-
                 </div>
             </div>
-            <!-- Konec Okna Aplikace -->
         </div>
     </section>
 
@@ -289,48 +296,166 @@
     <section id="contact" class="py-20 bg-white border-t border-stone-200">
         <div class="max-w-4xl mx-auto px-4 text-center">
             <h2 class="font-serif text-3xl font-bold text-navy-900 mb-6">Spojme se</h2>
-            <p class="text-stone-600 mb-8">
-                Máte zájem o podobnou analýzu pro vaši obec, nebo chcete probrat možnosti spolupráce?
-            </p>
+            <p class="text-stone-600 mb-8">Máte zájem o podobnou analýzu pro vaši obec, nebo chcete probrat možnosti spolupráce?</p>
             <div class="flex flex-col md:flex-row justify-center gap-6">
-                <a href="mailto:vas@email.cz" class="flex items-center justify-center gap-2 px-8 py-4 bg-navy-900 text-white rounded hover:bg-navy-800 transition shadow-lg">
-                    <span>✉️</span> Napsat Email
-                </a>
-                <a href="#" class="flex items-center justify-center gap-2 px-8 py-4 bg-stone-100 text-navy-900 border border-stone-300 rounded hover:bg-stone-200 transition">
-                    <span>🔗</span> LinkedIn Profil
-                </a>
+                <a href="mailto:vas@email.cz" class="flex items-center justify-center gap-2 px-8 py-4 bg-navy-900 text-white rounded hover:bg-navy-800 transition shadow-lg"><span>✉️</span> Napsat Email</a>
+                <a href="#" class="flex items-center justify-center gap-2 px-8 py-4 bg-stone-100 text-navy-900 border border-stone-300 rounded hover:bg-stone-200 transition"><span>🔗</span> LinkedIn Profil</a>
             </div>
         </div>
     </section>
 
-    <!-- === PATIČKA === -->
     <footer class="bg-stone-900 text-stone-400 py-12">
-        <div class="max-w-7xl mx-auto px-4 text-center text-sm">
-            <p>&copy; 2025 Miloslav Hesek. Vytvořeno s důrazem na transparentnost.</p>
-        </div>
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm"><p>&copy; 2025 Miloslav Hesek. Vytvořeno s důrazem na transparentnost.</p></div>
     </footer>
 
-    <!-- === JAVASCRIPT (Logika Aplikace) === -->
+    <!-- === MODÁLNÍ OKNO (HIDDEN BY DEFAULT) === -->
+    <div id="skill-modal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Pozadí (Overlay) -->
+        <div class="fixed inset-0 bg-navy-900/75 transition-opacity backdrop-blur-sm" onclick="closeModal()"></div>
+
+        <!-- Obsah Okna -->
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg modal-enter" id="modal-panel">
+                    
+                    <!-- Hlavička Okna -->
+                    <div class="bg-navy-900 px-4 py-5 sm:px-6 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <span id="modal-icon" class="text-2xl"></span>
+                            <h3 class="text-lg font-bold leading-6 text-white" id="modal-title">---</h3>
+                        </div>
+                        <button type="button" onclick="closeModal()" class="text-stone-400 hover:text-white focus:outline-none">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Tělo Okna -->
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="mt-2">
+                            <div id="modal-content" class="text-sm text-stone-600 space-y-4 leading-relaxed">
+                                <!-- Zde se dynamicky vloží text -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patička Okna -->
+                    <div class="bg-stone-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-t border-stone-100">
+                        <button type="button" onclick="scrollToAuditor()" class="inline-flex w-full justify-center rounded-md bg-amber-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 sm:ml-3 sm:w-auto transition">
+                            Ukázat v praxi
+                        </button>
+                        <button type="button" onclick="closeModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-stone-900 shadow-sm ring-1 ring-inset ring-stone-300 hover:bg-stone-50 sm:mt-0 sm:w-auto transition">
+                            Zavřít
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === JAVASCRIPT === -->
     <script>
-        // --- 1. Přepínání záložek (Tabs) ---
+        // --- 1. MODÁLNÍ OKNA LOGIKA (DATA) ---
+        const skillsData = {
+            'analysis': {
+                icon: '📊',
+                title: 'Analýza Veřejných Rozpočtů',
+                content: `
+                    <p class="font-bold text-navy-900">Co tato služba zahrnuje?</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Audit Mandatorních výdajů:</strong> Zjištění, kolik procent rozpočtu je "zabetonováno" v provozu a mzdách.</li>
+                        <li><strong>Investiční potenciál:</strong> Výpočet tzv. <em>Free Cash Flow</em> - kolik peněz reálně zbývá na rozvoj.</li>
+                        <li><strong>Kontrola zadluženosti:</strong> Analýza dluhové služby a ukazatele dluhové brzdy dle zákona.</li>
+                        <li><strong>Trendová analýza:</strong> Porovnání vývoje příjmů a výdajů za posledních 5 let.</li>
+                    </ul>
+                    <p class="mt-4 bg-amber-50 p-3 rounded border border-amber-100 text-amber-900">
+                        <strong>Cíl:</strong> Odhalit, zda obec hospodaří efektivně, nebo zda projídá svou budoucnost.
+                    </p>
+                `
+            },
+            'viz': {
+                icon: '💻',
+                title: 'Vizualizace Dat & Dashboardy',
+                content: `
+                    <p class="font-bold text-navy-900">Jak přeměňuji data?</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Čištění dat:</strong> Zpracování surových exportů z účetních systémů (Gordic, Vema, Monitor).</li>
+                        <li><strong>Interaktivní grafy:</strong> Tvorba dashboardů v Chart.js (web), PowerBI nebo Tableau.</li>
+                        <li><strong>Srozumitelnost:</strong> Převod složitých účetních termínů do "lidské řeči" (např. Třída 5 -> Provoz).</li>
+                    </ul>
+                    <p class="mt-4 bg-stone-100 p-3 rounded border border-stone-200">
+                        Využívám moderní technologie (HTML5, JavaScript) k tomu, aby data byla přístupná na mobilech i počítačích.
+                    </p>
+                `
+            },
+            'osint': {
+                icon: '🔍',
+                title: 'Investigativa z otevřených zdrojů',
+                content: `
+                    <p class="font-bold text-navy-900">Kde a co hledám?</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Registr smluv:</strong> Kontrola "salámové metody" (dělení zakázek pod limit) a podezřelých dodatků.</li>
+                        <li><strong>Hlídač státu:</strong> Propojování vazeb mezi politiky a dodavateli (střet zájmů).</li>
+                        <li><strong>Veřejné rejstříky:</strong> Kontrola vlastnické struktury firem, které pro město pracují.</li>
+                        <li><strong>Úřední deska:</strong> Monitoring zápisů z rad a zastupitelstev.</li>
+                    </ul>
+                    <p class="mt-4 text-red-600 font-medium">
+                        Identifikuji tzv. "Red Flags" - varovné signály korupce nebo neefektivity.
+                    </p>
+                `
+            }
+        };
+
+        function openModal(type) {
+            const modal = document.getElementById('skill-modal');
+            const panel = document.getElementById('modal-panel');
+            const data = skillsData[type];
+
+            // Naplnění dat
+            document.getElementById('modal-icon').innerText = data.icon;
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-content').innerHTML = data.content;
+
+            // Zobrazení
+            modal.classList.remove('hidden');
+            // Malé zpoždění pro animaci
+            setTimeout(() => {
+                panel.classList.remove('modal-enter');
+                panel.classList.add('modal-enter-active');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('skill-modal');
+            const panel = document.getElementById('modal-panel');
+
+            // Animace pryč
+            panel.classList.remove('modal-enter-active');
+            panel.classList.add('modal-exit-active');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                panel.classList.remove('modal-exit-active');
+                panel.classList.add('modal-enter'); // Reset pro příště
+            }, 200);
+        }
+
+        function scrollToAuditor() {
+            closeModal();
+            document.getElementById('auditor').scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        // --- 2. PŮVODNÍ LOGIKA AUDITORU (TABY, GRAFY) ---
         function switchTab(tabId) {
-            // Skrýt všechny
             ['tab-graphs', 'tab-calc', 'tab-sources'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            
-            // Zobrazit vybraný
             document.getElementById(tabId).classList.remove('hidden');
-            
-            // Resetovat tlačítka
             ['btn-tab-graphs', 'btn-tab-calc', 'btn-tab-sources'].forEach(id => {
                 const btn = document.getElementById(id);
                 btn.className = "px-4 py-1.5 text-sm font-medium rounded-md text-stone-600 hover:bg-stone-200 transition";
             });
-
-            // Aktivovat tlačítko
-            const activeBtnId = 'btn-' + tabId;
-            const activeBtn = document.getElementById(activeBtnId);
-            
-            // Styl pro aktivní tlačítko (jiný pro kalkulačku, která je tmavá)
+            const activeBtn = document.getElementById('btn-' + tabId);
             if(tabId === 'tab-calc') {
                  activeBtn.className = "px-4 py-1.5 text-sm font-medium rounded-md bg-navy-700 text-white shadow-sm transition";
             } else {
@@ -338,11 +463,10 @@
             }
         }
 
-        // --- 2. Data a Grafy ---
         const dataSet = {
             '2023': { structure: [120, 35], balance: [160, 155] },
             '2024': { structure: [135, 15], balance: [165, 150] },
-            '2025': { structure: [140, 60], balance: [180, 200] } // Deficit
+            '2025': { structure: [140, 60], balance: [180, 200] }
         };
 
         let chart1 = null;
@@ -354,7 +478,6 @@
         });
 
         function initCharts() {
-            // Graf Struktury
             const ctx1 = document.getElementById('structureChart').getContext('2d');
             chart1 = new Chart(ctx1, {
                 type: 'doughnut',
@@ -362,14 +485,13 @@
                     labels: ['Provoz (Mandatorní)', 'Investice (Kapitál)'],
                     datasets: [{
                         data: [0, 0],
-                        backgroundColor: ['#e7e5e4', '#d97706'], // stone-200, amber-600
+                        backgroundColor: ['#e7e5e4', '#d97706'],
                         borderWidth: 0
                     }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
 
-            // Graf Trendu
             const ctx2 = document.getElementById('trendChart').getContext('2d');
             chart2 = new Chart(ctx2, {
                 type: 'bar',
@@ -387,7 +509,6 @@
         }
 
         function updateData(year) {
-            // Update tlačítek
             document.querySelectorAll('.year-btn').forEach(btn => {
                 if(btn.dataset.year === year) {
                     btn.className = "year-btn px-3 py-1 text-sm border rounded bg-amber-50 border-amber-500 text-amber-800 font-bold shadow-inner";
@@ -395,45 +516,32 @@
                     btn.className = "year-btn px-3 py-1 text-sm border rounded bg-white border-stone-300 text-stone-600 hover:bg-stone-50";
                 }
             });
-
-            // Update dat
             const d = dataSet[year];
             chart1.data.datasets[0].data = d.structure;
             chart1.update();
-
             chart2.data.datasets[0].data = d.balance;
-            // Červená, pokud výdaje > příjmy
             const expenseColor = d.balance[1] > d.balance[0] ? '#ef4444' : '#78716c';
             chart2.data.datasets[0].backgroundColor = ['#1e3a8a', expenseColor];
             chart2.update();
         }
 
-        // --- 3. Kalkulačka ---
         function calculate() {
             const rev = parseFloat(document.getElementById('in-revenue').value) || 0;
             const man = parseFloat(document.getElementById('in-mandatory').value) || 0;
             const deb = parseFloat(document.getElementById('in-debt').value) || 0;
-
             if(rev === 0) return;
-
             const free = rev - (man + deb);
             const ratio = (free / rev) * 100;
-
             const resDiv = document.getElementById('res-amount');
             const barDiv = document.getElementById('res-bar');
             const msgDiv = document.getElementById('res-msg');
-
             resDiv.innerText = free.toLocaleString('cs-CZ') + " tis. Kč";
-            
-            // Nastavení baru
-            let width = Math.max(0, Math.min(100, ratio * 2.5)); // Zvětšení měřítka pro efekt
-            if(ratio < 0) width = 100; // Plný bar pro chybu
-
+            let width = Math.max(0, Math.min(100, ratio * 2.5));
+            if(ratio < 0) width = 100;
             barDiv.style.width = width + '%';
-
             if (ratio < 0) {
                 barDiv.className = "h-full bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-all duration-1000";
-                msgDiv.innerHTML = "<span class='text-red-400 font-bold'>VAROVÁNÍ:</span> Výdaje převyšují příjmy. Obec žije na dluh.";
+                msgDiv.innerHTML = "<span class='text-red-400 font-bold'>VAROVÁNÍ:</span> Výdaje převyšují příjmy.";
                 resDiv.className = "text-5xl font-bold text-red-500 my-4";
             } else if (ratio < 10) {
                 barDiv.className = "h-full bg-amber-500 transition-all duration-1000";
