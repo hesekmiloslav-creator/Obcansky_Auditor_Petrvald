@@ -1,46 +1,18 @@
-
-<html lang="cs">
+<!DOCTYPE html>
+<html lang="cs" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Občanský Auditor: Hospodaření Města Petřvald</title>
+    <title>Miloslav Hesek | Analytik & Občanský Auditor</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (Styling) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Chart.js -->
+    <!-- Chart.js (Grafy) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Font: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Chosen Palette: Warm Stone & Professional Navy -->
-    <!-- Application Structure Plan:
-         1. Header/Hero: Identifies the target entity (Petřvald) and the mission (Public Control).
-         2. Methodology Section: Explains the "Three Pillars" of public audit (Budget, Contracts, Documents).
-         3. Interactive Data Dashboard (The Core): 
-            - Tab 1: Budget Structure (Pie Chart) - Teaches Investment vs. Mandatory spending.
-            - Tab 2: Trend Analysis (Bar Chart) - Teaches Income vs. Expense balance over time.
-         4. Investigation Tools: Direct links to state databases filtered by Petřvald's IČO.
-         5. "Do It Yourself" Calculator: Allows the user to input data found in PDF reports to get a "Financial Health Score".
-         This structure moves from Understanding -> Visualization -> Action -> Synthesis.
-    -->
-
-    <!-- Visualization & Content Choices:
-         - Goal: Inform about budget structure.
-         - Viz: Doughnut Chart (Chart.js).
-         - Justification: Best for showing part-to-whole relationships (Investments vs. Maintenance).
-         
-         - Goal: Compare historical performance.
-         - Viz: Bar/Line Combo (Chart.js).
-         - Justification: Shows the trend of surplus/deficit over 2022-2025.
-         
-         - Goal: Engage/Calculate.
-         - Method: JS Input Form + Real-time Logic.
-         - Justification: Transforms passive reading into active analysis.
-    -->
-    
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- Fonty: Inter (Text) & Playfair Display (Nadpisy) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -48,24 +20,12 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
                     },
                     colors: {
-                        stone: {
-                            50: '#fafaf9',
-                            100: '#f5f5f4',
-                            200: '#e7e5e4',
-                            800: '#292524',
-                            900: '#1c1917',
-                        },
-                        navy: {
-                            700: '#1e3a8a',
-                            800: '#1e293b',
-                            900: '#0f172a',
-                        },
-                        amber: {
-                            500: '#f59e0b',
-                            600: '#d97706',
-                        }
+                        stone: { 50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 800: '#292524', 900: '#1c1917' },
+                        navy: { 700: '#1e3a8a', 800: '#1e293b', 900: '#0f172a' },
+                        amber: { 500: '#f59e0b', 600: '#d97706' }
                     }
                 }
             }
@@ -73,461 +33,423 @@
     </script>
 
     <style>
-        body {
-            background-color: #fafaf9; /* stone-50 */
-            color: #1c1917; /* stone-900 */
-        }
-        
-        /* Chart Container Styling - Mandatory Requirement */
+        /* Vlastní styly pro grafy a animace */
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 600px; /* Tailwind max-w-xl equivalent */
-            margin-left: auto;
-            margin-right: auto;
-            height: 350px;
-            max-height: 400px;
+            height: 300px;
         }
-
-        /* Custom scrollbar for data tables */
-        .scroller::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        .scroller::-webkit-scrollbar-track {
-            background: #e7e5e4;
-        }
-        .scroller::-webkit-scrollbar-thumb {
-            background: #a8a29e;
-            border-radius: 4px;
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
         }
     </style>
 </head>
-<body class="antialiased selection:bg-amber-200 selection:text-stone-900">
+<body class="bg-stone-50 text-stone-900 antialiased">
 
-    <!-- Navigation -->
-    <nav class="bg-navy-900 text-white shadow-lg sticky top-0 z-50">
+    <!-- === NAVIGACE === -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur border-b border-stone-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
+            <div class="flex justify-between items-center h-20">
                 <div class="flex items-center gap-3">
-                    <div class="bg-amber-500 text-navy-900 font-bold p-1.5 rounded text-xl">🏛️</div>
-                    <span class="font-bold text-lg tracking-tight">Občanský Auditor <span class="font-light text-stone-300">| Petřvald</span></span>
+                    <div class="w-10 h-10 bg-navy-900 text-white rounded-full flex items-center justify-center font-serif font-bold text-xl">M</div>
+                    <span class="font-serif text-xl font-bold text-navy-900">Miloslav Hesek</span>
                 </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#dashboard" class="hover:bg-navy-700 px-3 py-2 rounded-md text-sm font-medium transition">Dashboard</a>
-                        <a href="#zdroje" class="hover:bg-navy-700 px-3 py-2 rounded-md text-sm font-medium transition">Zdroje Dat</a>
-                        <a href="#kalkulacka" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-md text-sm font-medium transition shadow-md">Analyzovat</a>
-                    </div>
+                <div class="hidden md:flex space-x-8 text-sm font-medium">
+                    <a href="#home" class="text-stone-600 hover:text-amber-600 transition">Úvod</a>
+                    <a href="#skills" class="text-stone-600 hover:text-amber-600 transition">Dovednosti</a>
+                    <a href="#auditor" class="text-navy-900 hover:text-amber-600 font-bold border-b-2 border-amber-500 transition">Projekt Auditor</a>
+                    <a href="#contact" class="px-4 py-2 bg-navy-900 text-white rounded hover:bg-navy-800 transition">Kontakt</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="bg-white border-b border-stone-200">
-        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl font-extrabold text-navy-900 tracking-tight sm:text-5xl mb-4">
-                Veřejná kontrola hospodaření
-            </h1>
-            <p class="text-xl text-stone-600 max-w-3xl mx-auto">
-                Průvodce analýzou veřejných financí pro Město Petřvald (IČO: 00297593). 
-                Zjistěte, jak efektivně radnice hospodaří v letech 2022–2025 pomocí otevřených dat.
-            </p>
-            <div class="mt-8 flex justify-center gap-4">
-                <div class="flex flex-col items-center p-4 bg-stone-50 rounded-lg border border-stone-200 shadow-sm">
-                    <span class="text-2xl font-bold text-navy-800">00297593</span>
-                    <span class="text-xs text-stone-500 uppercase tracking-wide">Identifikační číslo (IČO)</span>
+    <!-- === HERO SEKCE (Úvod) === -->
+    <section id="home" class="pt-32 pb-20 bg-gradient-to-br from-stone-100 to-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
+            <div class="md:w-1/2 space-y-6">
+                <div class="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider rounded-full">Data & Transparency</div>
+                <h1 class="font-serif text-5xl md:text-6xl font-bold text-navy-900 leading-tight">
+                    Data nejsou jen čísla. <br>
+                    <span class="text-amber-600">Je to příběh obce.</span>
+                </h1>
+                <p class="text-lg text-stone-600 max-w-lg leading-relaxed">
+                    Jsem analytik se zaměřením na veřejnou kontrolu. Pomáhám občanům a samosprávám vidět pod povrch rozpočtových tabulek.
+                </p>
+                <div class="flex gap-4 pt-2">
+                    <a href="#auditor" class="px-6 py-3 bg-navy-900 text-white rounded shadow-lg hover:bg-navy-800 hover:-translate-y-1 transition transform font-medium">
+                        Spustit Auditor
+                    </a>
+                    <a href="#contact" class="px-6 py-3 bg-white border border-stone-300 text-stone-700 rounded shadow-sm hover:bg-stone-50 transition font-medium">
+                        Spolupráce
+                    </a>
                 </div>
-                <div class="flex flex-col items-center p-4 bg-stone-50 rounded-lg border border-stone-200 shadow-sm">
-                    <span class="text-2xl font-bold text-amber-600">Veřejné</span>
-                    <span class="text-xs text-stone-500 uppercase tracking-wide">Zdroj dat</span>
+            </div>
+            <!-- Zástupný kruh pro foto -->
+            <div class="md:w-1/2 flex justify-center relative">
+                <div class="absolute inset-0 bg-amber-500 rounded-full blur-3xl opacity-20 transform translate-x-10 translate-y-10"></div>
+                <div class="relative w-72 h-72 bg-white p-2 rounded-full shadow-2xl">
+                    <div class="w-full h-full bg-stone-200 rounded-full flex items-center justify-center overflow-hidden">
+                        <!-- Zde můžete vložit svou fotku, pokud ji máte, jinak zůstane tento placeholder -->
+                        <div class="flex flex-col items-center justify-center h-full text-stone-400">
+                            <span class="text-4xl mb-2">📷</span>
+                            <span class="text-sm font-serif italic">Miloslav Hesek</span>
+                        </div>
+                        <!-- Pro vložení fotky odkomentujte řádek níže a vložte URL obrázku -->
+                        <!-- <img src="URL_VASEHO_OBRAZKU.jpg" class="w-full h-full object-cover"> -->
+                    </div>
                 </div>
             </div>
         </div>
-    </header>
+    </section>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
-
-        <!-- SECTION 1: METHODOLOGY (Context) -->
-        <section id="metodika">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-navy-900">Jak číst hospodaření obce?</h2>
-                <p class="mt-2 text-stone-600">
-                    Pro pochopení finančního zdraví Petřvaldu není nutné žádat úřad o informace. Stačí sledovat tři klíčové ukazatele ve veřejně dostupných rejstřících. Tato sekce vysvětluje základní logiku předtím, než se ponoříte do dat.
-                </p>
+    <!-- === SEKCE DOVEDNOSTI === -->
+    <section id="skills" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="font-serif text-3xl font-bold text-navy-900">Moje specializace</h2>
+                <p class="text-stone-500 mt-2">Kombinuji technické znalosti s pochopením veřejné správy.</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Card 1 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:shadow-md transition duration-300">
-                    <div class="text-3xl mb-4">💰</div>
-                    <h3 class="text-lg font-bold text-navy-900 mb-2">Příjmy vs. Výdaje</h3>
-                    <p class="text-sm text-stone-600 leading-relaxed">
-                        Základní metrika. Pokud obec dlouhodobě utrácí více, než vydělá (bez investičních úvěrů), projídá svou budoucnost. Sledujeme tzv. <strong>Saldo rozpočtu</strong>.
+                <!-- Skill 1 -->
+                <div class="p-8 bg-stone-50 rounded-xl border border-stone-100 hover:shadow-lg transition group">
+                    <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">📊</div>
+                    <h3 class="font-bold text-xl text-navy-900 mb-2">Analýza Rozpočtů</h3>
+                    <p class="text-stone-600 text-sm">
+                        Rozklíčování mandatorních a kapitálových výdajů. Identifikace skrytých dluhů a neefektivity v hospodaření obcí.
                     </p>
                 </div>
-                <!-- Card 2 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:shadow-md transition duration-300">
-                    <div class="text-3xl mb-4">🏗️</div>
-                    <h3 class="text-lg font-bold text-navy-900 mb-2">Mandatorní vs. Kapitálové</h3>
-                    <p class="text-sm text-stone-600 leading-relaxed">
-                        Klíčový poměr. <strong>Běžné výdaje</strong> (provoz, platy) musí být co nejnižší, aby zbylo na <strong>Kapitálové výdaje</strong> (investice, stavby, rozvoj).
+                <!-- Skill 2 -->
+                <div class="p-8 bg-stone-50 rounded-xl border border-stone-100 hover:shadow-lg transition group">
+                    <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">💻</div>
+                    <h3 class="font-bold text-xl text-navy-900 mb-2">Vizualizace Dat</h3>
+                    <p class="text-stone-600 text-sm">
+                        Tvorba srozumitelných dashboardů. Převod složitých Excel tabulek do interaktivních grafů pro veřejnost.
                     </p>
                 </div>
-                <!-- Card 3 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:shadow-md transition duration-300">
-                    <div class="text-3xl mb-4">📜</div>
-                    <h3 class="text-lg font-bold text-navy-900 mb-2">Smlouvy a Faktury</h3>
-                    <p class="text-sm text-stone-600 leading-relaxed">
-                        Ďábel je v detailu. Každá faktura nad 50 000 Kč musí být v <strong>Registru smluv</strong>. Zde kontrolujeme, komu a za co město platí.
+                <!-- Skill 3 -->
+                <div class="p-8 bg-stone-50 rounded-xl border border-stone-100 hover:shadow-lg transition group">
+                    <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">🔍</div>
+                    <h3 class="font-bold text-xl text-navy-900 mb-2">Open Source Intelligence</h3>
+                    <p class="text-stone-600 text-sm">
+                        Pokročilé vyhledávání v rejstřících (Monitor, Hlídač státu, Registr smluv). Propojování vazeb dodavatelů.
                     </p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- SECTION 2: DASHBOARD (Visualization) -->
-        <section id="dashboard" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
-            <div class="p-6 border-b border-stone-200 bg-stone-50 flex justify-between items-center flex-wrap gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-navy-900">Interaktivní Vizualizace Hospodaření</h2>
-                    <p class="text-sm text-stone-500 mt-1">
-                        Modelová data založená na typickém rozpočtu obce velikosti Petřvaldu. Použijte přepínače pro simulaci různých scénářů.
-                    </p>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="updateData('2023')" class="px-4 py-2 text-sm font-medium bg-white border border-stone-300 rounded hover:bg-stone-50 focus:ring-2 focus:ring-amber-500 transition active-year" id="btn-2023">2023</button>
-                    <button onclick="updateData('2024')" class="px-4 py-2 text-sm font-medium bg-white border border-stone-300 rounded hover:bg-stone-50 focus:ring-2 focus:ring-amber-500 transition" id="btn-2024">2024</button>
-                    <button onclick="updateData('2025')" class="px-4 py-2 text-sm font-medium bg-white border border-stone-300 rounded hover:bg-stone-50 focus:ring-2 focus:ring-amber-500 transition" id="btn-2025">2025 (Výhled)</button>
-                </div>
-            </div>
+    <!-- === HLAVNÍ PROJEKT: AUDITOR (Aplikace) === -->
+    <section id="auditor" class="py-20 bg-navy-900 text-white relative">
+        <!-- Pozadí -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-96 h-96 bg-blue-600 rounded-full blur-[100px] opacity-30"></div>
+            <div class="absolute bottom-0 left-0 w-80 h-80 bg-amber-600 rounded-full blur-[100px] opacity-20"></div>
+        </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6">
-                <!-- Chart 1: Structure -->
-                <div class="flex flex-col">
-                    <h3 class="text-lg font-semibold text-center mb-4 text-navy-800">Struktura Výdajů (Investice vs. Provoz)</h3>
-                    <div class="chart-container">
-                        <canvas id="structureChart"></canvas>
-                    </div>
-                    <div class="mt-4 p-4 bg-amber-50 rounded border border-amber-100 text-sm text-amber-900">
-                        <strong>💡 Tip:</strong> Zdravá obec by měla mít alespoň 15-20% rozpočtu vyhrazeno na investice (Kapitálové výdaje). Pokud je modrá výseč příliš malá, město pouze "přežívá".
-                    </div>
-                </div>
-
-                <!-- Chart 2: Trend -->
-                <div class="flex flex-col">
-                    <h3 class="text-lg font-semibold text-center mb-4 text-navy-800">Vývoj Salda (Příjmy mínus Výdaje)</h3>
-                    <div class="chart-container">
-                        <canvas id="trendChart"></canvas>
-                    </div>
-                    <div class="mt-4 p-4 bg-stone-50 rounded border border-stone-200 text-sm text-stone-700">
-                        <strong>📊 Interpretace:</strong> Sloupce pod nulou znamenají deficit (ztrátu). Deficit je v pořádku, pokud je krytý naspořenými penězi z minulých let nebo úvěrem na smysluplnou investici.
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: DATA SOURCES (Action) -->
-        <section id="zdroje">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-navy-900">Kde najít skutečná data?</h2>
-                <p class="mt-2 text-stone-600">
-                    Provedli jsme předvýběr státních databází přímo pro IČO 00297593 (Petřvald). Kliknutím na tlačítka se dostanete přímo ke zdrojovým dokumentům bez složitého hledání.
+        <div class="max-w-6xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <span class="text-amber-500 font-bold text-sm tracking-widest uppercase">Interaktivní Nástroj</span>
+                <h2 class="font-serif text-4xl font-bold mt-2 mb-4">Občanský Auditor: Petřvald</h2>
+                <p class="text-stone-300 max-w-2xl mx-auto">
+                    Ukázka mé práce v praxi. Tento nástroj umožňuje občanům analyzovat hospodaření města Petřvald (IČO: 00297593) bez nutnosti studovat stohy papírů.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Source 1 -->
-                <div class="border border-stone-200 rounded-lg p-6 bg-white hover:border-amber-400 transition cursor-pointer group">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-bold text-navy-900 group-hover:text-amber-600 transition">Monitor MFČR</h3>
-                        <span class="text-2xl">📈</span>
+            <!-- === OKNO APLIKACE === -->
+            <div class="bg-stone-50 text-stone-900 rounded-2xl shadow-2xl overflow-hidden border border-stone-700">
+                
+                <!-- 1. Toolbar Aplikace -->
+                <div class="bg-white border-b border-stone-200 p-4 flex flex-wrap justify-between items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="ml-2 font-bold text-navy-900 text-sm uppercase tracking-wide">Dashboard v1.0</span>
                     </div>
-                    <p class="text-sm text-stone-600 mb-4">
-                        Oficiální portál Ministerstva financí. Obsahuje detailní rozklikávací rozpočty, plnění rozpočtu a účetní závěrky. Nejlepší zdroj pro "velká čísla".
-                    </p>
-                    <a href="https://monitor.statnipokladna.cz/" target="_blank" class="inline-flex items-center text-amber-600 font-semibold text-sm hover:underline">
-                        Otevřít Monitor (Hledat: Petřvald) <span>&rarr;</span>
-                    </a>
+                    <div class="flex space-x-2 bg-stone-100 p-1 rounded-lg">
+                        <button onclick="switchTab('tab-graphs')" class="px-4 py-1.5 text-sm font-medium rounded-md shadow-sm bg-white text-navy-900 transition" id="btn-tab-graphs">Přehled</button>
+                        <button onclick="switchTab('tab-calc')" class="px-4 py-1.5 text-sm font-medium rounded-md text-stone-600 hover:bg-stone-200 transition" id="btn-tab-calc">Kalkulačka</button>
+                        <button onclick="switchTab('tab-sources')" class="px-4 py-1.5 text-sm font-medium rounded-md text-stone-600 hover:bg-stone-200 transition" id="btn-tab-sources">Zdroje dat</button>
+                    </div>
                 </div>
 
-                <!-- Source 2 -->
-                <div class="border border-stone-200 rounded-lg p-6 bg-white hover:border-amber-400 transition cursor-pointer group">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-bold text-navy-900 group-hover:text-amber-600 transition">Registr Smluv</h3>
-                        <span class="text-2xl">🔍</span>
-                    </div>
-                    <p class="text-sm text-stone-600 mb-4">
-                        Databáze všech smluv nad 50 000 Kč. Zde zkontrolujete konkrétní faktury za údržbu zeleně, IT služby, nebo stavební práce.
-                    </p>
-                    <a href="https://smlouvy.gov.cz/vyhledavani?party_ico=00297593" target="_blank" class="inline-flex items-center text-amber-600 font-semibold text-sm hover:underline">
-                        Otevřít smlouvy pro IČO 00297593 <span>&rarr;</span>
-                    </a>
-                </div>
+                <!-- 2. Obsah Aplikace -->
+                <div class="min-h-[500px]">
+                    
+                    <!-- TAB 1: GRAFY -->
+                    <div id="tab-graphs" class="p-6 md:p-8 animate-fade-in">
+                        <div class="flex justify-between items-end mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold text-navy-900">Simulace Rozpočtu</h3>
+                                <p class="text-sm text-stone-500">Modelová data pro demonstraci funkcionality.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="updateData('2023')" class="year-btn px-3 py-1 text-sm border rounded bg-amber-50 border-amber-500 text-amber-800 font-bold" data-year="2023">2023</button>
+                                <button onclick="updateData('2024')" class="year-btn px-3 py-1 text-sm border rounded bg-white border-stone-300 text-stone-600" data-year="2024">2024</button>
+                                <button onclick="updateData('2025')" class="year-btn px-3 py-1 text-sm border rounded bg-white border-stone-300 text-stone-600" data-year="2025">2025</button>
+                            </div>
+                        </div>
 
-                <!-- Source 3 -->
-                <div class="border border-stone-200 rounded-lg p-6 bg-white hover:border-amber-400 transition cursor-pointer group">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-bold text-navy-900 group-hover:text-amber-600 transition">Hlídač Státu</h3>
-                        <span class="text-2xl">🛡️</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Graf struktury -->
+                            <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+                                <h4 class="text-sm font-bold text-stone-400 uppercase mb-4 text-center">Poměr Investic vs. Provoz</h4>
+                                <div class="chart-container relative h-64">
+                                    <canvas id="structureChart"></canvas>
+                                </div>
+                                <p id="desc-structure" class="mt-4 text-xs text-center text-stone-500 bg-stone-50 p-2 rounded">
+                                    Zdravá obec investuje alespoň 20 % rozpočtu.
+                                </p>
+                            </div>
+                            <!-- Graf trendu -->
+                            <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+                                <h4 class="text-sm font-bold text-stone-400 uppercase mb-4 text-center">Vývoj Salda (Příjmy - Výdaje)</h4>
+                                <div class="chart-container relative h-64">
+                                    <canvas id="trendChart"></canvas>
+                                </div>
+                                <p id="desc-trend" class="mt-4 text-xs text-center text-stone-500 bg-stone-50 p-2 rounded">
+                                    Sloupec pod nulou značí deficit (čerpání rezerv).
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-sm text-stone-600 mb-4">
-                        Agregátor, který propojuje firmy na politiky a sponzory. Ideální pro kontrolu vazeb dodavatelů na vedení města.
-                    </p>
-                    <a href="https://www.hlidacstatu.cz/Hledat?q=ico:00297593" target="_blank" class="inline-flex items-center text-amber-600 font-semibold text-sm hover:underline">
-                        Analyzovat na Hlídači státu <span>&rarr;</span>
-                    </a>
-                </div>
 
-                <!-- Source 4 -->
-                <div class="border border-stone-200 rounded-lg p-6 bg-white hover:border-amber-400 transition cursor-pointer group">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-bold text-navy-900 group-hover:text-amber-600 transition">Elektronická Úřední deska</h3>
-                        <span class="text-2xl">📋</span>
+                    <!-- TAB 2: KALKULAČKA -->
+                    <div id="tab-calc" class="hidden p-6 md:p-8 bg-navy-800 h-full text-white">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold text-white mb-2">Investiční Kalkulačka</h3>
+                                <p class="text-stone-400 text-sm mb-6">
+                                    Zadejte údaje z Monitoru MFČR a zjistěte, kolik peněz reálně zbývá na rozvoj města po zaplacení nutného provozu.
+                                </p>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="text-xs font-bold text-amber-500 uppercase">Příjmy (tis. Kč)</label>
+                                        <input type="number" id="in-revenue" class="w-full bg-navy-900 border border-navy-600 text-white p-3 rounded mt-1 focus:border-amber-500 focus:outline-none" placeholder="Např. 150000">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-stone-400 uppercase">Provozní výdaje (tis. Kč)</label>
+                                        <input type="number" id="in-mandatory" class="w-full bg-navy-900 border border-navy-600 text-white p-3 rounded mt-1 focus:border-amber-500 focus:outline-none" placeholder="Např. 110000">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-stone-400 uppercase">Splátky dluhů (tis. Kč)</label>
+                                        <input type="number" id="in-debt" class="w-full bg-navy-900 border border-navy-600 text-white p-3 rounded mt-1 focus:border-amber-500 focus:outline-none" placeholder="Např. 5000">
+                                    </div>
+                                    <button onclick="calculate()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded shadow-lg transition mt-2">
+                                        Spočítat výsledek
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Výsledek -->
+                            <div class="bg-navy-900/50 border border-navy-700 p-8 rounded-2xl text-center">
+                                <span class="text-stone-400 uppercase text-xs tracking-wider">Volné prostředky (Free Cash Flow)</span>
+                                <div class="text-5xl font-bold text-white my-4" id="res-amount">---</div>
+                                <div class="w-full bg-navy-900 h-4 rounded-full overflow-hidden mb-4 relative">
+                                    <div id="res-bar" class="h-full w-0 bg-stone-700 transition-all duration-1000"></div>
+                                </div>
+                                <div id="res-msg" class="text-sm text-stone-300 min-h-[3rem]">
+                                    Zadejte data pro výpočet.
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-sm text-stone-600 mb-4">
-                        Zde město povinně zveřejňuje návrhy rozpočtů a závěrečné účty. Hledejte dokument "Závěrečný účet města" za roky 2022-2024.
-                    </p>
-                    <a href="https://www.petrvald-mesto.cz/uredni-deska/" target="_blank" class="inline-flex items-center text-amber-600 font-semibold text-sm hover:underline">
-                        Přejít na web města <span>&rarr;</span>
-                    </a>
+
+                    <!-- TAB 3: ZDROJE -->
+                    <div id="tab-sources" class="hidden p-6 md:p-8 bg-stone-100 h-full">
+                        <h3 class="text-xl font-bold text-navy-900 mb-6">Ostrá data pro IČO: 00297593</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <a href="https://monitor.statnipokladna.cz/" target="_blank" class="block p-6 bg-white border border-stone-200 rounded-xl hover:border-amber-500 hover:shadow-md transition group">
+                                <div class="text-3xl mb-2">📈</div>
+                                <h4 class="font-bold text-navy-900 group-hover:text-amber-600">Monitor MFČR</h4>
+                                <p class="text-xs text-stone-500 mt-1">Oficiální rozpočty a účetní závěrky.</p>
+                            </a>
+                            <a href="https://smlouvy.gov.cz/vyhledavani?party_ico=00297593" target="_blank" class="block p-6 bg-white border border-stone-200 rounded-xl hover:border-amber-500 hover:shadow-md transition group">
+                                <div class="text-3xl mb-2">📜</div>
+                                <h4 class="font-bold text-navy-900 group-hover:text-amber-600">Registr smluv</h4>
+                                <p class="text-xs text-stone-500 mt-1">Faktury a smlouvy nad 50 000 Kč.</p>
+                            </a>
+                            <a href="https://www.hlidacstatu.cz/Hledat?q=ico:00297593" target="_blank" class="block p-6 bg-white border border-stone-200 rounded-xl hover:border-amber-500 hover:shadow-md transition group">
+                                <div class="text-3xl mb-2">🛡️</div>
+                                <h4 class="font-bold text-navy-900 group-hover:text-amber-600">Hlídač státu</h4>
+                                <p class="text-xs text-stone-500 mt-1">Vazby na politiky a sponzory.</p>
+                            </a>
+                            <!-- OPRAVENÝ ODKAZ ZDE: -->
+                            <a href="https://udeska.petrvald-mesto.cz/" target="_blank" class="block p-6 bg-white border border-stone-200 rounded-xl hover:border-amber-500 hover:shadow-md transition group">
+                                <div class="text-3xl mb-2">🏛️</div>
+                                <h4 class="font-bold text-navy-900 group-hover:text-amber-600">Úřední deska</h4>
+                                <p class="text-xs text-stone-500 mt-1">Závěrečné účty města.</p>
+                            </a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-        </section>
+            <!-- Konec Okna Aplikace -->
+        </div>
+    </section>
 
-        <!-- SECTION 4: INTERACTIVE CALCULATOR (Synthesis) -->
-        <section id="kalkulacka" class="bg-navy-900 text-white rounded-2xl shadow-xl overflow-hidden">
-            <div class="p-8 md:p-12">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <h2 class="text-3xl font-bold mb-4">Investiční Kalkulačka</h2>
-                        <p class="text-stone-300 mb-6">
-                            Našli jste data v Monitoru nebo Závěrečném účtu? Zadejte je sem a zjistěte, kolik peněz reálně městu zbývá na nové projekty (hřiště, chodníky, opravy) po zaplacení nezbytného provozu.
-                        </p>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-amber-500 mb-1">Celkové Příjmy (v tis. Kč)</label>
-                                <input type="number" id="in-revenue" class="w-full bg-navy-800 border border-navy-700 rounded p-3 text-white focus:outline-none focus:border-amber-500 transition" placeholder="Např. 150000">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-stone-400 mb-1">Běžné (Provozní) Výdaje (v tis. Kč)</label>
-                                <input type="number" id="in-expense-mandatory" class="w-full bg-navy-800 border border-navy-700 rounded p-3 text-white focus:outline-none focus:border-amber-500 transition" placeholder="Např. 110000">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-stone-400 mb-1">Splátky dluhů/úvěrů (v tis. Kč)</label>
-                                <input type="number" id="in-debt" class="w-full bg-navy-800 border border-navy-700 rounded p-3 text-white focus:outline-none focus:border-amber-500 transition" placeholder="Např. 5000">
-                            </div>
-                            <button onclick="calculateHealth()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded transition mt-4">
-                                Vypočítat Investiční Potenciál
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="bg-navy-800 p-6 rounded-xl border border-navy-700 h-full flex flex-col justify-center items-center text-center relative" id="result-container">
-                        <h3 class="text-lg text-stone-400 font-medium">Volné prostředky na rozvoj</h3>
-                        <div class="text-5xl font-bold text-white my-4" id="res-free-cash">--- Kč</div>
-                        <div class="text-sm text-stone-400 mb-6" id="res-percent">Zadejte data pro výpočet</div>
-                        
-                        <div class="w-full bg-navy-900 rounded-full h-4 mb-2 overflow-hidden">
-                            <div id="progress-bar" class="bg-stone-700 h-4 rounded-full transition-all duration-1000" style="width: 0%"></div>
-                        </div>
-                        <div class="flex justify-between w-full text-xs text-stone-500">
-                            <span>Kritické (0%)</span>
-                            <span>Ideální (>20%)</span>
-                        </div>
-                        
-                        <div id="result-message" class="mt-6 p-3 rounded bg-navy-900 border border-navy-700 text-sm hidden">
-                            <!-- JS fills this -->
-                        </div>
-                    </div>
-                </div>
+    <!-- === KONTAKT === -->
+    <section id="contact" class="py-20 bg-white border-t border-stone-200">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="font-serif text-3xl font-bold text-navy-900 mb-6">Spojme se</h2>
+            <p class="text-stone-600 mb-8">
+                Máte zájem o podobnou analýzu pro vaši obec, nebo chcete probrat možnosti spolupráce?
+            </p>
+            <div class="flex flex-col md:flex-row justify-center gap-6">
+                <a href="mailto:vas@email.cz" class="flex items-center justify-center gap-2 px-8 py-4 bg-navy-900 text-white rounded hover:bg-navy-800 transition shadow-lg">
+                    <span>✉️</span> Napsat Email
+                </a>
+                <a href="#" class="flex items-center justify-center gap-2 px-8 py-4 bg-stone-100 text-navy-900 border border-stone-300 rounded hover:bg-stone-200 transition">
+                    <span>🔗</span> LinkedIn Profil
+                </a>
             </div>
-        </section>
+        </div>
+    </section>
 
-    </main>
-
-    <footer class="bg-stone-100 border-t border-stone-200 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-stone-500 text-sm">
-            <p class="mb-2">&copy; 2025 Občanský Auditor Petřvald. Nezávislá iniciativa pro transparentnost.</p>
-            <p>Tato aplikace využívá pouze veřejně dostupné zdroje dle zákona č. 106/1999 Sb. Není oficiálním webem města.</p>
+    <!-- === PATIČKA === -->
+    <footer class="bg-stone-900 text-stone-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm">
+            <p>&copy; 2025 Miloslav Hesek. Vytvořeno s důrazem na transparentnost.</p>
         </div>
     </footer>
 
-    <!-- Application Logic -->
+    <!-- === JAVASCRIPT (Logika Aplikace) === -->
     <script>
-        // --- DATA STORAGE & STATE ---
-        // Simulated/Approximate data structure for demonstration purposes based on typical municipal profiles.
-        // In a real scenario, the user would use the links provided to find exact numbers.
-        const cityData = {
-            '2023': {
-                expenses: { mandatory: 120, capital: 35 }, // in millions CZK (illustrative)
-                balance: { income: 160, totalExpense: 155 },
-                description: "Rok 2023: Stabilní hospodaření, mírný přebytek."
-            },
-            '2024': {
-                expenses: { mandatory: 135, capital: 15 },
-                balance: { income: 165, totalExpense: 150 },
-                description: "Rok 2024: Nárůst mandatorních výdajů (energie, platy), pokles investic."
-            },
-            '2025': {
-                expenses: { mandatory: 140, capital: 60 },
-                balance: { income: 180, totalExpense: 200 }, // Deficit due to investment
-                description: "Rok 2025 (Výhled): Plánován velký investiční projekt, rozpočet je schodkový (krytý z minulých let)."
-            }
-        };
-
-        let currentYear = '2023';
-        let structureChartInstance = null;
-        let trendChartInstance = null;
-
-        // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            initCharts();
-            updateData('2023'); // Load initial state
-        });
-
-        // --- CHART LOGIC ---
-        function initCharts() {
-            // 1. Structure Chart (Doughnut)
-            const ctxStructure = document.getElementById('structureChart').getContext('2d');
-            structureChartInstance = new Chart(ctxStructure, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Běžné výdaje (Provoz)', 'Kapitálové výdaje (Investice)'],
-                    datasets: [{
-                        data: [0, 0], // placeholders
-                        backgroundColor: ['#e7e5e4', '#d97706'], // stone-200, amber-600
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.label + ': ' + context.raw + ' mil. Kč';
-                                }
-                            }
-                        }
-                    }
-                }
+        // --- 1. Přepínání záložek (Tabs) ---
+        function switchTab(tabId) {
+            // Skrýt všechny
+            ['tab-graphs', 'tab-calc', 'tab-sources'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            
+            // Zobrazit vybraný
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Resetovat tlačítka
+            ['btn-tab-graphs', 'btn-tab-calc', 'btn-tab-sources'].forEach(id => {
+                const btn = document.getElementById(id);
+                btn.className = "px-4 py-1.5 text-sm font-medium rounded-md text-stone-600 hover:bg-stone-200 transition";
             });
 
-            // 2. Trend Chart (Bar)
-            const ctxTrend = document.getElementById('trendChart').getContext('2d');
-            trendChartInstance = new Chart(ctxTrend, {
+            // Aktivovat tlačítko
+            const activeBtnId = 'btn-' + tabId;
+            const activeBtn = document.getElementById(activeBtnId);
+            
+            // Styl pro aktivní tlačítko (jiný pro kalkulačku, která je tmavá)
+            if(tabId === 'tab-calc') {
+                 activeBtn.className = "px-4 py-1.5 text-sm font-medium rounded-md bg-navy-700 text-white shadow-sm transition";
+            } else {
+                 activeBtn.className = "px-4 py-1.5 text-sm font-medium rounded-md bg-white text-navy-900 shadow-sm transition";
+            }
+        }
+
+        // --- 2. Data a Grafy ---
+        const dataSet = {
+            '2023': { structure: [120, 35], balance: [160, 155] },
+            '2024': { structure: [135, 15], balance: [165, 150] },
+            '2025': { structure: [140, 60], balance: [180, 200] } // Deficit
+        };
+
+        let chart1 = null;
+        let chart2 = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            updateData('2023');
+        });
+
+        function initCharts() {
+            // Graf Struktury
+            const ctx1 = document.getElementById('structureChart').getContext('2d');
+            chart1 = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Provoz (Mandatorní)', 'Investice (Kapitál)'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: ['#e7e5e4', '#d97706'], // stone-200, amber-600
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            // Graf Trendu
+            const ctx2 = document.getElementById('trendChart').getContext('2d');
+            chart2 = new Chart(ctx2, {
                 type: 'bar',
                 data: {
                     labels: ['Příjmy', 'Výdaje'],
                     datasets: [{
-                        label: 'Milionů Kč',
+                        label: 'Mil. Kč',
                         data: [0, 0],
-                        backgroundColor: ['#1e3a8a', '#78716c'], // navy-700, stone-500
+                        backgroundColor: ['#1e3a8a', '#78716c'],
                         borderRadius: 4
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function updateData(year) {
+            // Update tlačítek
+            document.querySelectorAll('.year-btn').forEach(btn => {
+                if(btn.dataset.year === year) {
+                    btn.className = "year-btn px-3 py-1 text-sm border rounded bg-amber-50 border-amber-500 text-amber-800 font-bold shadow-inner";
+                } else {
+                    btn.className = "year-btn px-3 py-1 text-sm border rounded bg-white border-stone-300 text-stone-600 hover:bg-stone-50";
                 }
             });
+
+            // Update dat
+            const d = dataSet[year];
+            chart1.data.datasets[0].data = d.structure;
+            chart1.update();
+
+            chart2.data.datasets[0].data = d.balance;
+            // Červená, pokud výdaje > příjmy
+            const expenseColor = d.balance[1] > d.balance[0] ? '#ef4444' : '#78716c';
+            chart2.data.datasets[0].backgroundColor = ['#1e3a8a', expenseColor];
+            chart2.update();
         }
 
-        // --- INTERACTION HANDLERS ---
-        function updateData(year) {
-            // Update State
-            currentYear = year;
-            const data = cityData[year];
+        // --- 3. Kalkulačka ---
+        function calculate() {
+            const rev = parseFloat(document.getElementById('in-revenue').value) || 0;
+            const man = parseFloat(document.getElementById('in-mandatory').value) || 0;
+            const deb = parseFloat(document.getElementById('in-debt').value) || 0;
 
-            // Update UI Buttons
-            document.querySelectorAll('#dashboard button').forEach(btn => {
-                btn.classList.remove('bg-amber-50', 'border-amber-500', 'text-amber-700', 'ring-2', 'ring-amber-500');
-                btn.classList.add('bg-white', 'border-stone-300');
-            });
-            const activeBtn = document.getElementById(`btn-${year}`);
-            activeBtn.classList.remove('bg-white', 'border-stone-300');
-            activeBtn.classList.add('bg-amber-50', 'border-amber-500', 'text-amber-700');
+            if(rev === 0) return;
 
-            // Update Charts
-            // Structure
-            structureChartInstance.data.datasets[0].data = [data.expenses.mandatory, data.expenses.capital];
-            structureChartInstance.update();
+            const free = rev - (man + deb);
+            const ratio = (free / rev) * 100;
 
-            // Trend
-            trendChartInstance.data.datasets[0].data = [data.balance.income, data.balance.totalExpense];
-            // Color logic: If expense > income, make expense bar red-ish, else neutral
-            const expenseColor = data.balance.totalExpense > data.balance.income ? '#ef4444' : '#78716c';
-            trendChartInstance.data.datasets[0].backgroundColor = ['#1e3a8a', expenseColor];
-            trendChartInstance.update();
-        }
+            const resDiv = document.getElementById('res-amount');
+            const barDiv = document.getElementById('res-bar');
+            const msgDiv = document.getElementById('res-msg');
 
-        // --- CALCULATOR LOGIC ---
-        function calculateHealth() {
-            // Get inputs
-            const revenue = parseFloat(document.getElementById('in-revenue').value) || 0;
-            const mandatory = parseFloat(document.getElementById('in-expense-mandatory').value) || 0;
-            const debt = parseFloat(document.getElementById('in-debt').value) || 0;
-
-            if(revenue === 0) {
-                alert("Zadejte prosím alespoň příjmy.");
-                return;
-            }
-
-            // Calculation
-            const expenses = mandatory + debt;
-            const freeCash = revenue - expenses;
-            const ratio = (freeCash / revenue) * 100;
-
-            // UI Update
-            const resEl = document.getElementById('res-free-cash');
-            const percEl = document.getElementById('res-percent');
-            const barEl = document.getElementById('progress-bar');
-            const msgEl = document.getElementById('result-message');
-
-            resEl.innerText = freeCash.toLocaleString('cs-CZ') + " tis. Kč";
-            percEl.innerText = `To je ${ratio.toFixed(1)} % z celkových příjmů.`;
-
-            // Bar Width & Color
-            let barWidth = Math.max(0, Math.min(100, ratio * 3)); // Scale for visibility
-            if (ratio < 0) barWidth = 0; // Debt
+            resDiv.innerText = free.toLocaleString('cs-CZ') + " tis. Kč";
             
-            barEl.style.width = `${barWidth}%`;
-            
-            let message = "";
-            let colorClass = "";
+            // Nastavení baru
+            let width = Math.max(0, Math.min(100, ratio * 2.5)); // Zvětšení měřítka pro efekt
+            if(ratio < 0) width = 100; // Plný bar pro chybu
+
+            barDiv.style.width = width + '%';
 
             if (ratio < 0) {
-                colorClass = "bg-red-500";
-                message = "⚠️ <strong>Varování:</strong> Provozní výdaje převyšují příjmy. Město žije na dluh nebo spotřebovává rezervy. Není prostor pro investice.";
-                resEl.classList.add('text-red-400');
-                resEl.classList.remove('text-white', 'text-amber-400', 'text-green-400');
+                barDiv.className = "h-full bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-all duration-1000";
+                msgDiv.innerHTML = "<span class='text-red-400 font-bold'>VAROVÁNÍ:</span> Výdaje převyšují příjmy. Obec žije na dluh.";
+                resDiv.className = "text-5xl font-bold text-red-500 my-4";
             } else if (ratio < 10) {
-                colorClass = "bg-amber-500";
-                message = "😐 <strong>Nízký potenciál:</strong> Většinu peněz spolkne provoz úřadu a údržba. Na nové projekty zbývá málo.";
-                resEl.classList.add('text-amber-400');
-                resEl.classList.remove('text-white', 'text-red-400', 'text-green-400');
+                barDiv.className = "h-full bg-amber-500 transition-all duration-1000";
+                msgDiv.innerHTML = "<span class='text-amber-400 font-bold'>Nízký potenciál:</span> Většinu rozpočtu spolkne provoz.";
+                resDiv.className = "text-5xl font-bold text-amber-500 my-4";
             } else {
-                colorClass = "bg-green-500";
-                message = "✅ <strong>Zdravé hospodaření:</strong> Město generuje dostatek volných prostředků pro rozvoj a investice.";
-                resEl.classList.add('text-green-400');
-                resEl.classList.remove('text-white', 'text-red-400', 'text-amber-400');
+                barDiv.className = "h-full bg-green-500 shadow-[0_0_15px_rgba(34,197,94,0.5)] transition-all duration-1000";
+                msgDiv.innerHTML = "<span class='text-green-400 font-bold'>Zdravé finance:</span> Obec má dostatek prostředků na rozvoj.";
+                resDiv.className = "text-5xl font-bold text-green-500 my-4";
             }
-
-            barEl.className = `h-4 rounded-full transition-all duration-1000 ${colorClass}`;
-            
-            msgEl.innerHTML = message;
-            msgEl.classList.remove('hidden');
         }
     </script>
 </body>
